@@ -19,10 +19,27 @@ app.use(
 
 app.use(express.json());
 
+app.get("/health", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({
+      success: true,
+      dbTime: result.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
+});
+
 /* ================= ROOT ================= */
 app.get("/", (req, res) => {
   res.send("Smart Parking Backend Running");
 });
+
+
 
 /* ================= DB TEST ================= */
 app.get("/test-db", async (req, res) => {
